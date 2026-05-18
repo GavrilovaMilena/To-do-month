@@ -1,8 +1,15 @@
 // Список месяцев
 const MONTHS_LIST = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
-// Текущий выбранный месяц
-let currentMonth = 'Март';
+// Функция для получения текущего месяца
+function getCurrentMonth() {
+  const now = new Date();
+  const monthIndex = now.getMonth(); // 0 = Январь, 11 = Декабрь
+  return MONTHS_LIST[monthIndex];
+}
+
+// Текущий выбранный месяц (изначально - текущий месяц)
+let currentMonth = getCurrentMonth();
 
 // Все данные
 let allTasks = {};
@@ -43,6 +50,15 @@ function createDefaultData() {
   }
   
   // Добавляем примеры задач для нескольких месяцев
+  allTasks['Январь'] = [
+    { id: Date.now() + 'jan1', text: 'Поставить новогодние цели', done: false },
+    { id: Date.now() + 'jan2', text: 'Начать здоровый образ жизни', done: false }
+  ];
+  
+  allTasks['Февраль'] = [
+    { id: Date.now() + 'feb1', text: 'Подготовить подарок на 14 февраля', done: false }
+  ];
+  
   allTasks['Март'] = [
     { id: Date.now() + '1', text: 'Завершить важный проект', done: false },
     { id: Date.now() + '2', text: 'Купить подарок для друга', done: true },
@@ -63,6 +79,31 @@ function createDefaultData() {
   
   allTasks['Июнь'] = [
     { id: Date.now() + '10', text: 'Поехать на море', done: false }
+  ];
+  
+  allTasks['Июль'] = [
+    { id: Date.now() + '11', text: 'Сходить в парк аттракционов', done: false }
+  ];
+  
+  allTasks['Август'] = [
+    { id: Date.now() + '12', text: 'Подготовиться к осени', done: false }
+  ];
+  
+  allTasks['Сентябрь'] = [
+    { id: Date.now() + '13', text: 'Начать новый учебный год', done: false }
+  ];
+  
+  allTasks['Октябрь'] = [
+    { id: Date.now() + '14', text: 'Купить тыкву на Хэллоуин', done: false }
+  ];
+  
+  allTasks['Ноябрь'] = [
+    { id: Date.now() + '15', text: 'Составить список подарков', done: false }
+  ];
+  
+  allTasks['Декабрь'] = [
+    { id: Date.now() + '16', text: 'Украсить елку', done: false },
+    { id: Date.now() + '17', text: 'Купить подарки для близких', done: false }
   ];
 }
 
@@ -252,6 +293,15 @@ function init() {
         addTask();
       }
     };
+  }
+  
+  // Добавляем индикатор текущего месяца в заголовок
+  const today = new Date();
+  const dateInfo = document.querySelector('.subtitle');
+  if (dateInfo) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = today.toLocaleDateString('ru-RU', options);
+    dateInfo.innerHTML = `пастельные планы, фиолетовое настроение • ${formattedDate}`;
   }
 }
 
