@@ -491,11 +491,6 @@ footer {
   transition: all 0.3s ease;
 }
 
-.quote-icon {
-  font-size: 42px;
-  opacity: 0.8;
-}
-
 .quote-content {
   flex: 1;
 }
@@ -522,9 +517,6 @@ footer {
 @media (max-width: 700px) {
   .quote-container {
     padding: 15px 20px;
-  }
-  .quote-icon {
-    font-size: 32px;
   }
   .quote-text {
     font-size: 14px;
