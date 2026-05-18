@@ -425,7 +425,7 @@ function init() {
   if (dateInfo) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = today.toLocaleDateString('ru-RU', options);
-    dateInfo.innerHTML = `пастельные планы, фиолетовое настроение • ${formattedDate}`;
+    dateInfo.innerHTML = `you can do more than you think • ${formattedDate}`;
     dateInfo.style.color = currentColors.subtitleColor;
   }
 }
