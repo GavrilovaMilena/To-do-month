@@ -3,13 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your plans</title>
+  <title>Your Planner</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-  <h1>🌷 Your plans</h1>
-  <div class="subtitle">you can do more than you think.</div>
+  <div class="header-with-customize">
+    <div>
+      <h1>🌷 Your Planner</h1>
+      <div class="subtitle">you can do more than you think</div>
+    </div>
+    <button id="customizeBtn" class="customize-btn">🎨 Кастомизировать</button>
+  </div>
 
   <div class="months-bar" id="monthsBar"></div>
 
@@ -26,6 +31,63 @@
   <div id="tasksContainer" class="tasks-list"></div>
   <div class="info-note">💡 Совет: дважды кликните по тексту задачи, чтобы отредактировать. Выберите месяц в списке и нажмите "Переместить"</div>
   <footer>✧ Все данные сохраняются автоматически ✧</footer>
+</div>
+
+<!-- Модальное окно для кастомизации -->
+<div id="customizeModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🎨 Кастомизация цветов</h2>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">Выберите пастельные оттенки для вашего планировщика</p>
+      
+      <div class="color-option">
+        <label>Фон страницы:</label>
+        <div class="color-controls">
+          <input type="color" id="bgColor1" value="#fdeef9">
+          <input type="color" id="bgColor2" value="#f5e6fa">
+          <span class="color-note">(градиент от цвета 1 к цвету 2)</span>
+        </div>
+      </div>
+      
+      <div class="color-option">
+        <label>Фон контейнера:</label>
+        <input type="color" id="containerBg" value="#fff8fa">
+      </div>
+      
+      <div class="color-option">
+        <label>Цвет заголовка:</label>
+        <input type="color" id="titleColor" value="#b96f9f">
+      </div>
+      
+      <div class="color-option">
+        <label>Цвет подзаголовка:</label>
+        <input type="color" id="subtitleColor" value="#aa7bc3">
+      </div>
+      
+      <div class="color-option">
+        <label>Активный месяц (кнопка):</label>
+        <input type="color" id="activeMonthBg" value="#e2c7e9">
+      </div>
+      
+      <div class="color-option">
+        <label>Цвет кнопок действий:</label>
+        <input type="color" id="buttonColor" value="#e5bddc">
+      </div>
+      
+      <div class="color-option">
+        <label>Цвет карточек задач:</label>
+        <input type="color" id="cardBg" value="#ffffff">
+      </div>
+      
+      <button id="resetColorsBtn" class="reset-colors-btn">Сбросить к стандартным</button>
+    </div>
+    <div class="modal-footer">
+      <button id="saveColorsBtn" class="save-colors-btn">💾 Сохранить настройки</button>
+    </div>
+  </div>
 </div>
 
 <script src="script.js"></script>

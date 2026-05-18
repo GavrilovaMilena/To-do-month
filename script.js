@@ -4,25 +4,114 @@ const MONTHS_LIST = ['Январь', 'Февраль', 'Март', 'Апрель
 // Функция для получения текущего месяца
 function getCurrentMonth() {
   const now = new Date();
-  const monthIndex = now.getMonth(); // 0 = Январь, 11 = Декабрь
+  const monthIndex = now.getMonth();
   return MONTHS_LIST[monthIndex];
 }
 
-// Текущий выбранный месяц (изначально - текущий месяц)
+// Текущий выбранный месяц
 let currentMonth = getCurrentMonth();
 
 // Все данные
 let allTasks = {};
 
-// Инициализация данных
+// Стандартные цвета
+const defaultColors = {
+  bgColor1: '#fdeef9',
+  bgColor2: '#f5e6fa',
+  containerBg: '#fff8fa',
+  titleColor: '#b96f9f',
+  subtitleColor: '#aa7bc3',
+  activeMonthBg: '#e2c7e9',
+  buttonColor: '#e5bddc',
+  cardBg: '#ffffff'
+};
+
+// Текущие цвета
+let currentColors = { ...defaultColors };
+
+// Загрузка сохраненных цветов
+function loadColors() {
+  const savedColors = localStorage.getItem('softPlannerColors');
+  if (savedColors) {
+    try {
+      const parsed = JSON.parse(savedColors);
+      currentColors = { ...defaultColors, ...parsed };
+    } catch(e) {
+      console.error('Ошибка загрузки цветов', e);
+    }
+  }
+  applyColors();
+}
+
+// Применение цветов к странице
+function applyColors() {
+  // Фон body с градиентом
+  document.body.style.background = `linear-gradient(145deg, ${currentColors.bgColor1} 0%, ${currentColors.bgColor2} 100%)`;
+  
+  // Фон контейнера
+  const container = document.querySelector('.container');
+  if (container) {
+    container.style.background = currentColors.containerBg;
+  }
+  
+  // Цвет заголовка
+  const title = document.querySelector('h1');
+  if (title) title.style.color = currentColors.titleColor;
+  
+  // Цвет подзаголовка
+  const subtitle = document.querySelector('.subtitle');
+  if (subtitle) subtitle.style.color = currentColors.subtitleColor;
+  
+  // Цвет заголовка месяца в туду-листе
+  const monthTitle = document.getElementById('monthTitle');
+  if (monthTitle) monthTitle.style.color = currentColors.titleColor;
+  
+  // Применяем цвет для активных кнопок месяцев
+  const activeBtns = document.querySelectorAll('.month-btn.active');
+  activeBtns.forEach(btn => {
+    btn.style.background = currentColors.activeMonthBg;
+  });
+  
+  // Применяем цвет для кнопок добавления и других (кроме кнопок в карточках)
+  const addButton = document.getElementById('addButton');
+  if (addButton) addButton.style.background = currentColors.buttonColor;
+  
+  const customizeBtn = document.getElementById('customizeBtn');
+  if (customizeBtn) customizeBtn.style.background = `linear-gradient(135deg, ${currentColors.buttonColor}, ${adjustColor(currentColors.buttonColor, -20)})`;
+  
+  const saveColorsBtn = document.getElementById('saveColorsBtn');
+  if (saveColorsBtn) saveColorsBtn.style.background = `linear-gradient(135deg, ${currentColors.buttonColor}, ${adjustColor(currentColors.buttonColor, -20)})`;
+  
+  // Цвет карточек задач
+  const taskCards = document.querySelectorAll('.task-card');
+  taskCards.forEach(card => {
+    card.style.background = currentColors.cardBg;
+  });
+}
+
+// Вспомогательная функция для затемнения цвета
+function adjustColor(color, percent) {
+  const num = parseInt(color.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+  const G = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amt));
+  const B = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
+  return `#${(0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)}`;
+}
+
+// Сохранение цветов
+function saveColors() {
+  localStorage.setItem('softPlannerColors', JSON.stringify(currentColors));
+  applyColors();
+}
+
+// Инициализация данных задач
 function initData() {
-  // Проверяем, есть ли сохраненные данные
   const saved = localStorage.getItem('softPlannerData');
   
   if (saved) {
     try {
       allTasks = JSON.parse(saved);
-      // Убеждаемся, что для каждого месяца есть массив
       for (let month of MONTHS_LIST) {
         if (!allTasks[month]) {
           allTasks[month] = [];
@@ -36,7 +125,6 @@ function initData() {
     createDefaultData();
   }
   
-  // Сохраняем текущий месяц
   if (!allTasks[currentMonth]) {
     allTasks[currentMonth] = [];
   }
@@ -48,16 +136,6 @@ function createDefaultData() {
   for (let month of MONTHS_LIST) {
     allTasks[month] = [];
   }
-  
-  // Добавляем примеры задач для нескольких месяцев
-  allTasks['Январь'] = [
-    { id: Date.now() + 'jan1', text: 'Поставить новогодние цели', done: false },
-    { id: Date.now() + 'jan2', text: 'Начать здоровый образ жизни', done: false }
-  ];
-  
-  allTasks['Февраль'] = [
-    { id: Date.now() + 'feb1', text: 'Подготовить подарок на 14 февраля', done: false }
-  ];
   
   allTasks['Март'] = [
     { id: Date.now() + '1', text: 'Завершить важный проект', done: false },
@@ -79,31 +157,6 @@ function createDefaultData() {
   
   allTasks['Июнь'] = [
     { id: Date.now() + '10', text: 'Поехать на море', done: false }
-  ];
-  
-  allTasks['Июль'] = [
-    { id: Date.now() + '11', text: 'Сходить в парк аттракционов', done: false }
-  ];
-  
-  allTasks['Август'] = [
-    { id: Date.now() + '12', text: 'Подготовиться к осени', done: false }
-  ];
-  
-  allTasks['Сентябрь'] = [
-    { id: Date.now() + '13', text: 'Начать новый учебный год', done: false }
-  ];
-  
-  allTasks['Октябрь'] = [
-    { id: Date.now() + '14', text: 'Купить тыкву на Хэллоуин', done: false }
-  ];
-  
-  allTasks['Ноябрь'] = [
-    { id: Date.now() + '15', text: 'Составить список подарков', done: false }
-  ];
-  
-  allTasks['Декабрь'] = [
-    { id: Date.now() + '16', text: 'Украсить елку', done: false },
-    { id: Date.now() + '17', text: 'Купить подарки для близких', done: false }
   ];
 }
 
@@ -129,6 +182,7 @@ function renderMonths() {
     btn.className = 'month-btn';
     if (month === currentMonth) {
       btn.classList.add('active');
+      btn.style.background = currentColors.activeMonthBg;
     }
     btn.onclick = function() {
       currentMonth = month;
@@ -149,6 +203,7 @@ function renderTasks() {
   
   const tasks = allTasks[currentMonth] || [];
   monthTitle.innerHTML = `🌸 ${currentMonth} · мои планы`;
+  monthTitle.style.color = currentColors.titleColor;
   
   const activeCount = tasks.filter(t => !t.done).length;
   counterSpan.textContent = `${tasks.length} задач, ${activeCount} в работе`;
@@ -163,8 +218,8 @@ function renderTasks() {
   for (let task of tasks) {
     const taskDiv = document.createElement('div');
     taskDiv.className = 'task-card';
+    taskDiv.style.background = currentColors.cardBg;
     
-    // Левая часть с чекбоксом и текстом
     const infoDiv = document.createElement('div');
     infoDiv.className = 'task-info';
     
@@ -193,7 +248,6 @@ function renderTasks() {
     infoDiv.appendChild(checkbox);
     infoDiv.appendChild(textSpan);
     
-    // Правая часть с управлением
     const controlsDiv = document.createElement('div');
     controlsDiv.className = 'task-controls';
     
@@ -217,7 +271,6 @@ function renderTasks() {
         return;
       }
       
-      // Находим индекс задачи
       const taskIndex = allTasks[currentMonth].findIndex(t => t.id === task.id);
       if (taskIndex !== -1) {
         const movedTask = { ...allTasks[currentMonth][taskIndex] };
@@ -275,11 +328,83 @@ function addTask() {
   input.focus();
 }
 
+// Настройка модального окна
+function setupModal() {
+  const modal = document.getElementById('customizeModal');
+  const customizeBtn = document.getElementById('customizeBtn');
+  const closeBtn = document.querySelector('.close');
+  const saveBtn = document.getElementById('saveColorsBtn');
+  const resetBtn = document.getElementById('resetColorsBtn');
+  
+  // Открытие модального окна
+  customizeBtn.onclick = function() {
+    // Загружаем текущие значения в пикеры
+    document.getElementById('bgColor1').value = currentColors.bgColor1;
+    document.getElementById('bgColor2').value = currentColors.bgColor2;
+    document.getElementById('containerBg').value = currentColors.containerBg;
+    document.getElementById('titleColor').value = currentColors.titleColor;
+    document.getElementById('subtitleColor').value = currentColors.subtitleColor;
+    document.getElementById('activeMonthBg').value = currentColors.activeMonthBg;
+    document.getElementById('buttonColor').value = currentColors.buttonColor;
+    document.getElementById('cardBg').value = currentColors.cardBg;
+    
+    modal.style.display = 'block';
+  };
+  
+  // Закрытие модального окна
+  closeBtn.onclick = function() {
+    modal.style.display = 'none';
+  };
+  
+  // Закрытие при клике вне окна
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  };
+  
+  // Сохранение цветов
+  saveBtn.onclick = function() {
+    currentColors = {
+      bgColor1: document.getElementById('bgColor1').value,
+      bgColor2: document.getElementById('bgColor2').value,
+      containerBg: document.getElementById('containerBg').value,
+      titleColor: document.getElementById('titleColor').value,
+      subtitleColor: document.getElementById('subtitleColor').value,
+      activeMonthBg: document.getElementById('activeMonthBg').value,
+      buttonColor: document.getElementById('buttonColor').value,
+      cardBg: document.getElementById('cardBg').value
+    };
+    saveColors();
+    renderMonths(); // Перерисовываем кнопки с новыми цветами
+    renderTasks(); // Перерисовываем задачи
+    modal.style.display = 'none';
+  };
+  
+  // Сброс к стандартным цветам
+  resetBtn.onclick = function() {
+    currentColors = { ...defaultColors };
+    document.getElementById('bgColor1').value = defaultColors.bgColor1;
+    document.getElementById('bgColor2').value = defaultColors.bgColor2;
+    document.getElementById('containerBg').value = defaultColors.containerBg;
+    document.getElementById('titleColor').value = defaultColors.titleColor;
+    document.getElementById('subtitleColor').value = defaultColors.subtitleColor;
+    document.getElementById('activeMonthBg').value = defaultColors.activeMonthBg;
+    document.getElementById('buttonColor').value = defaultColors.buttonColor;
+    document.getElementById('cardBg').value = defaultColors.cardBg;
+    saveColors();
+    renderMonths();
+    renderTasks();
+  };
+}
+
 // Запуск приложения
 function init() {
+  loadColors(); // Сначала загружаем цвета
   initData();
   renderMonths();
   renderTasks();
+  setupModal();
   
   const addBtn = document.getElementById('addButton');
   if (addBtn) {
@@ -295,13 +420,13 @@ function init() {
     };
   }
   
-  // Добавляем индикатор текущего месяца в заголовок
   const today = new Date();
   const dateInfo = document.querySelector('.subtitle');
   if (dateInfo) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = today.toLocaleDateString('ru-RU', options);
     dateInfo.innerHTML = `пастельные планы, фиолетовое настроение • ${formattedDate}`;
+    dateInfo.style.color = currentColors.subtitleColor;
   }
 }
 

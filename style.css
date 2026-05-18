@@ -9,6 +9,7 @@ body {
   background: linear-gradient(145deg, #fdeef9 0%, #f5e6fa 100%);
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background 0.3s ease;
 }
 
 .container {
@@ -18,12 +19,41 @@ body {
   border-radius: 48px;
   padding: 30px;
   box-shadow: 0 20px 40px rgba(156, 96, 155, 0.15);
+  transition: background 0.3s ease;
+}
+
+.header-with-customize {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.customize-btn {
+  background: linear-gradient(135deg, #e5bddc, #d9acd0);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #4e334b;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(156, 96, 155, 0.2);
+}
+
+.customize-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(156, 96, 155, 0.3);
 }
 
 h1 {
   font-size: 32px;
   color: #b96f9f;
   margin-bottom: 8px;
+  transition: color 0.3s ease;
 }
 
 .subtitle {
@@ -31,6 +61,7 @@ h1 {
   margin-bottom: 30px;
   padding-left: 12px;
   border-left: 3px solid #e4bad4;
+  transition: color 0.3s ease;
 }
 
 .months-bar {
@@ -119,6 +150,7 @@ h1 {
 .tasks-header h2 {
   color: #886592;
   font-size: 24px;
+  transition: color 0.3s ease;
 }
 
 .counter {
@@ -146,7 +178,7 @@ h1 {
   flex-wrap: wrap;
   gap: 15px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s;
+  transition: all 0.2s, background 0.3s ease;
 }
 
 .task-card:hover {
@@ -251,6 +283,163 @@ footer {
   color: #b291b0;
 }
 
+/* Стили для модального окна */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #fff5fc, #fef0fa);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 48px;
+  width: 90%;
+  max-width: 550px;
+  box-shadow: 0 25px 50px rgba(156, 96, 155, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 2px solid #e4bad4;
+}
+
+.modal-header h2 {
+  color: #b96f9f;
+  font-size: 24px;
+}
+
+.close {
+  color: #cc9aa6;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.close:hover {
+  color: #b96f9f;
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-desc {
+  color: #886592;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.color-option {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.color-option label {
+  min-width: 160px;
+  font-weight: 600;
+  color: #6c4b68;
+  font-size: 14px;
+}
+
+.color-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.color-option input[type="color"] {
+  width: 50px;
+  height: 40px;
+  border: 2px solid #e4bad4;
+  border-radius: 12px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.color-note {
+  font-size: 11px;
+  color: #b894b0;
+}
+
+.reset-colors-btn {
+  background: #f0e1ea;
+  border: 1px solid #e4bad4;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #88698b;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.reset-colors-btn:hover {
+  background: #e8d4e2;
+  transform: scale(0.98);
+}
+
+.modal-footer {
+  padding: 20px 25px;
+  border-top: 2px solid #e4bad4;
+  display: flex;
+  justify-content: center;
+}
+
+.save-colors-btn {
+  background: linear-gradient(135deg, #e5bddc, #d9acd0);
+  border: none;
+  padding: 12px 32px;
+  border-radius: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4e334b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.save-colors-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(156, 96, 155, 0.3);
+}
+
 @media (max-width: 700px) {
   .container {
     padding: 20px;
@@ -261,5 +450,16 @@ footer {
   }
   .task-controls {
     justify-content: flex-end;
+  }
+  .color-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .color-option label {
+    min-width: auto;
+  }
+  .modal-content {
+    margin: 15% auto;
+    width: 95%;
   }
 }
