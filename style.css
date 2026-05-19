@@ -71,7 +71,6 @@ h1 {
   backdrop-filter: blur(4px);
   border: 1px solid rgba(228, 186, 212, 0.5);
   transition: all 0.3s ease;
-  text-align: center;
 }
 
 .quote-text {
