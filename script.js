@@ -34,6 +34,79 @@ const defaultColors = {
 // Текущие цвета
 let currentColors = { ...defaultColors };
 
+// ========== БЛОК С КАРУСЕЛЬЮ МЕСЯЦЕВ ==========
+let carouselElement = null;
+let isDragging = false;
+let startX = 0;
+let scrollLeft = 0;
+
+function initCarousel() {
+  carouselElement = document.getElementById('monthsCarousel');
+  if (!carouselElement) return;
+  
+  // События для перетаскивания мышью
+  carouselElement.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.pageX - carouselElement.offsetLeft;
+    scrollLeft = carouselElement.scrollLeft;
+    carouselElement.style.cursor = 'grabbing';
+  });
+  
+  carouselElement.addEventListener('mouseleave', () => {
+    isDragging = false;
+    carouselElement.style.cursor = 'grab';
+  });
+  
+  carouselElement.addEventListener('mouseup', () => {
+    isDragging = false;
+    carouselElement.style.cursor = 'grab';
+  });
+  
+  carouselElement.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - carouselElement.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    carouselElement.scrollLeft = scrollLeft - walk;
+  });
+  
+  // Для тач-экранов
+  carouselElement.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    startX = e.touches[0].pageX - carouselElement.offsetLeft;
+    scrollLeft = carouselElement.scrollLeft;
+  });
+  
+  carouselElement.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.touches[0].pageX - carouselElement.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    carouselElement.scrollLeft = scrollLeft - walk;
+  });
+  
+  carouselElement.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+}
+
+function scrollCarousel(direction) {
+  if (!carouselElement) return;
+  const scrollAmount = 300;
+  carouselElement.scrollLeft += direction === 'next' ? scrollAmount : -scrollAmount;
+}
+
+function scrollToActiveMonth() {
+  if (!carouselElement) return;
+  const activeBtn = document.querySelector('.month-btn.active');
+  if (activeBtn) {
+    const btnRect = activeBtn.getBoundingClientRect();
+    const carouselRect = carouselElement.getBoundingClientRect();
+    const scrollNeeded = activeBtn.offsetLeft - carouselElement.offsetLeft - (carouselRect.width / 2) + (btnRect.width / 2);
+    carouselElement.scrollLeft += scrollNeeded;
+  }
+}
+
 // ========== БЛОК С ЦИТАТАМИ ==========
 const quotesCollection = [
   { text: "Маленькие шаги каждый день приводят к большим результатам.", author: "Конфуций" },
@@ -115,7 +188,6 @@ function applyColorsToAllElements() {
   const title = document.getElementById('mainTitle');
   if (title) {
     title.style.color = currentColors.titleColor;
-    // Обновляем иконку в заголовке
     const icon = currentColors.titleIcon || '🌷';
     const textWithoutIcon = title.textContent.replace(/^[^\w\s]+\s*/, '');
     title.innerHTML = `${icon} ${textWithoutIcon}`;
@@ -127,7 +199,6 @@ function applyColorsToAllElements() {
   const monthTitle = document.getElementById('monthTitle');
   if (monthTitle) {
     monthTitle.style.color = currentColors.titleColor;
-    // Обновляем иконку месяца
     const icon = currentColors.monthIcon || '📅';
     const textWithoutIcon = monthTitle.textContent.replace(/^[^\w\s]+\s*/, '');
     monthTitle.innerHTML = `${icon} ${textWithoutIcon}`;
@@ -141,17 +212,6 @@ function applyColorsToAllElements() {
   const addButton = document.getElementById('addButton');
   if (addButton) addButton.style.background = currentColors.buttonColor;
   
-  const monthBtns = document.querySelectorAll('.month-btn');
-  monthBtns.forEach(btn => {
-    if (!btn.classList.contains('active')) {
-      btn.style.background = currentColors.monthBtnBg;
-      btn.style.color = currentColors.monthBtnColor;
-    } else {
-      btn.style.background = currentColors.activeMonthBg;
-      btn.style.color = '#5f3f63';
-    }
-  });
-  
   const addPanel = document.querySelector('.add-panel');
   if (addPanel) addPanel.style.background = currentColors.cardBg;
   
@@ -159,11 +219,6 @@ function applyColorsToAllElements() {
   if (taskInput) {
     taskInput.style.borderColor = currentColors.borderColor;
   }
-  
-  const taskCards = document.querySelectorAll('.task-card');
-  taskCards.forEach(card => {
-    card.style.background = currentColors.cardBg;
-  });
   
   const counter = document.querySelector('.counter');
   if (counter) counter.style.background = currentColors.activeMonthBg + '80';
@@ -185,6 +240,18 @@ function applyColorsToAllElements() {
   
   const quoteAuthor = document.querySelector('.quote-author');
   if (quoteAuthor) quoteAuthor.style.color = currentColors.subtitleColor + 'aa';
+  
+  // Обновляем стили кнопок месяцев
+  const monthBtns = document.querySelectorAll('.month-btn');
+  monthBtns.forEach(btn => {
+    if (!btn.classList.contains('active')) {
+      btn.style.background = currentColors.monthBtnBg;
+      btn.style.color = currentColors.monthBtnColor;
+    } else {
+      btn.style.background = currentColors.activeMonthBg;
+      btn.style.color = '#5f3f63';
+    }
+  });
 }
 
 function adjustColor(color, percent) {
@@ -289,10 +356,10 @@ function generateId() {
 }
 
 function renderMonths() {
-  const bar = document.getElementById('monthsBar');
-  if (!bar) return;
+  const track = document.getElementById('monthsTrack');
+  if (!track) return;
   
-  bar.innerHTML = '';
+  track.innerHTML = '';
   for (let month of MONTHS_LIST) {
     const btn = document.createElement('button');
     btn.textContent = month;
@@ -309,9 +376,14 @@ function renderMonths() {
       currentMonth = month;
       renderMonths();
       renderTasks();
+      scrollToActiveMonth();
     };
-    bar.appendChild(btn);
+    track.appendChild(btn);
   }
+  
+  setTimeout(() => {
+    scrollToActiveMonth();
+  }, 100);
 }
 
 function renderTasks() {
@@ -534,6 +606,13 @@ function init() {
   renderTasks();
   setupModal();
   displayDailyQuote();
+  initCarousel();
+  
+  // Навигация по стрелкам
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+  if (prevBtn) prevBtn.onclick = () => scrollCarousel('prev');
+  if (nextBtn) nextBtn.onclick = () => scrollCarousel('next');
   
   const addBtn = document.getElementById('addButton');
   if (addBtn) {

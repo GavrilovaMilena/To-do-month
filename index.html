@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Your Planner</title>
   <link
     rel="icon"
@@ -21,13 +21,20 @@
     <button id="customizeBtn" class="customize-btn">🎨 Кастомизировать</button>
   </div>
 
-  <!-- Блок с цитатой дня (удален quote-icon) -->
+  <!-- Блок с цитатой дня -->
   <div class="quote-container">
     <div class="quote-text" id="dailyQuote">Загрузка вдохновения...</div>
     <div class="quote-author" id="quoteAuthor"></div>
   </div>
 
-  <div class="months-bar" id="monthsBar"></div>
+  <!-- Карусель месяцев -->
+  <div class="months-carousel-container">
+    <button class="carousel-arrow carousel-prev" id="carouselPrev">‹</button>
+    <div class="months-carousel" id="monthsCarousel">
+      <div class="months-track" id="monthsTrack"></div>
+    </div>
+    <button class="carousel-arrow carousel-next" id="carouselNext">›</button>
+  </div>
 
   <div class="add-panel">
     <input type="text" id="taskInput" placeholder="Что нужно сделать? Например: подготовить отчет, купить цветы..." />

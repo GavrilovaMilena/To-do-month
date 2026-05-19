@@ -62,7 +62,7 @@ h1 {
   transition: color 0.3s ease;
 }
 
-/* Блок с цитатой дня (без иконки) */
+/* Блок с цитатой дня */
 .quote-container {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(245, 230, 250, 0.5));
   border-radius: 32px;
@@ -71,6 +71,7 @@ h1 {
   backdrop-filter: blur(4px);
   border: 1px solid rgba(228, 186, 212, 0.5);
   transition: all 0.3s ease;
+  text-align: center;
 }
 
 .quote-text {
@@ -89,26 +90,76 @@ h1 {
   transition: color 0.3s ease;
 }
 
-.months-bar {
+/* Карусель месяцев */
+.months-carousel-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 25px;
-  background: rgba(255, 255, 255, 0.7);
-  padding: 15px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 12px;
   border-radius: 60px;
+}
+
+.carousel-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fef4fc;
+  border: none;
+  font-size: 28px;
+  font-weight: bold;
+  color: #88698b;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.carousel-arrow:hover {
+  background: #e2c7e9;
+  transform: scale(1.05);
+  color: #5f3f63;
+}
+
+.months-carousel {
+  flex: 1;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+
+.months-carousel:active {
+  cursor: grabbing;
+}
+
+.months-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.months-track {
+  display: flex;
+  gap: 12px;
+  padding: 5px 0;
+  transition: transform 0.3s ease;
 }
 
 .month-btn {
   background: #fef4fc;
   border: none;
-  padding: 8px 20px;
+  padding: 10px 24px;
   border-radius: 40px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #88698b;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .month-btn.active {
@@ -117,7 +168,7 @@ h1 {
   box-shadow: 0 2px 8px rgba(156, 96, 155, 0.2);
 }
 
-.month-btn:hover {
+.month-btn:hover:not(.active) {
   background: #faeaf6;
   transform: translateY(-2px);
 }
@@ -292,7 +343,7 @@ h1 {
 
 .info-note {
   margin-top: 20px;
-  text-align: center;
+  text-align: right;
   font-size: 12px;
   color: #b18dae;
   padding: 8px 15px;
@@ -328,7 +379,7 @@ footer {
 
 .modal-content {
   background: linear-gradient(135deg, #fff5fc, #fef0fa);
-  margin: 3% auto;
+  margin: 5% auto;
   padding: 0;
   border-radius: 48px;
   width: 90%;
@@ -485,5 +536,10 @@ footer {
   .modal-content {
     margin: 15% auto;
     width: 95%;
+  }
+  .carousel-arrow {
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
   }
 }
