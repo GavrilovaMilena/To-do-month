@@ -14,13 +14,15 @@ let currentMonth = getCurrentMonth();
 // Все данные
 let allTasks = {};
 
-// Стандартные цвета
+// Стандартные цвета и иконки
 const defaultColors = {
   bgColor1: '#fdeef9',
   bgColor2: '#f5e6fa',
   containerBg: '#fff8fa',
   titleColor: '#b96f9f',
+  titleIcon: '🌷',
   subtitleColor: '#aa7bc3',
+  monthIcon: '📅',
   activeMonthBg: '#e2c7e9',
   buttonColor: '#e5bddc',
   cardBg: '#ffffff',
@@ -33,7 +35,6 @@ const defaultColors = {
 let currentColors = { ...defaultColors };
 
 // ========== БЛОК С ЦИТАТАМИ ==========
-// Коллекция воодушевляющих цитат
 const quotesCollection = [
   { text: "Маленькие шаги каждый день приводят к большим результатам.", author: "Конфуций" },
   { text: "Ты способна на большее, чем думаешь. Просто начни.", author: "Неизвестный" },
@@ -55,7 +56,6 @@ const quotesCollection = [
   { text: "У тебя есть сила изменить этот день.", author: "Неизвестный" }
 ];
 
-// Получение цитаты дня (меняется раз в сутки)
 function getDailyQuote() {
   const today = new Date().toDateString();
   const savedQuoteDate = localStorage.getItem('dailyQuoteDate');
@@ -76,7 +76,6 @@ function getDailyQuote() {
   return newQuote;
 }
 
-// Отображение цитаты на странице
 function displayDailyQuote() {
   const quoteElement = document.getElementById('dailyQuote');
   const authorElement = document.getElementById('quoteAuthor');
@@ -113,14 +112,26 @@ function applyColorsToAllElements() {
     container.style.background = currentColors.containerBg + 'd9';
   }
   
-  const title = document.querySelector('h1');
-  if (title) title.style.color = currentColors.titleColor;
+  const title = document.getElementById('mainTitle');
+  if (title) {
+    title.style.color = currentColors.titleColor;
+    // Обновляем иконку в заголовке
+    const icon = currentColors.titleIcon || '🌷';
+    const textWithoutIcon = title.textContent.replace(/^[^\w\s]+\s*/, '');
+    title.innerHTML = `${icon} ${textWithoutIcon}`;
+  }
   
   const subtitle = document.querySelector('.subtitle');
   if (subtitle) subtitle.style.color = currentColors.subtitleColor;
   
   const monthTitle = document.getElementById('monthTitle');
-  if (monthTitle) monthTitle.style.color = currentColors.titleColor;
+  if (monthTitle) {
+    monthTitle.style.color = currentColors.titleColor;
+    // Обновляем иконку месяца
+    const icon = currentColors.monthIcon || '📅';
+    const textWithoutIcon = monthTitle.textContent.replace(/^[^\w\s]+\s*/, '');
+    monthTitle.innerHTML = `${icon} ${textWithoutIcon}`;
+  }
   
   const customizeBtn = document.getElementById('customizeBtn');
   if (customizeBtn) {
@@ -163,7 +174,6 @@ function applyColorsToAllElements() {
   const footer = document.querySelector('footer');
   if (footer) footer.style.color = currentColors.subtitleColor;
   
-  // Применяем цвет для контейнера цитаты
   const quoteContainer = document.querySelector('.quote-container');
   if (quoteContainer) {
     quoteContainer.style.background = `linear-gradient(135deg, ${currentColors.containerBg}cc, ${currentColors.activeMonthBg}40)`;
@@ -177,7 +187,6 @@ function applyColorsToAllElements() {
   if (quoteAuthor) quoteAuthor.style.color = currentColors.subtitleColor + 'aa';
 }
 
-// Вспомогательная функция для затемнения цвета
 function adjustColor(color, percent) {
   const num = parseInt(color.replace('#', ''), 16);
   const amt = Math.round(2.55 * percent);
@@ -187,7 +196,6 @@ function adjustColor(color, percent) {
   return `#${(0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)}`;
 }
 
-// Сохранение цветов
 function saveColors() {
   localStorage.setItem('softPlannerColors', JSON.stringify(currentColors));
   applyColorsToAllElements();
@@ -195,7 +203,6 @@ function saveColors() {
   renderTasks();
 }
 
-// Инициализация данных задач
 function initData() {
   const saved = localStorage.getItem('softPlannerData');
   
@@ -220,7 +227,6 @@ function initData() {
   }
 }
 
-// Создание демо-данных
 function createDefaultData() {
   allTasks = {};
   for (let month of MONTHS_LIST) {
@@ -274,17 +280,14 @@ function createDefaultData() {
   ];
 }
 
-// Сохранение в localStorage
 function saveData() {
   localStorage.setItem('softPlannerData', JSON.stringify(allTasks));
 }
 
-// Генерация уникального ID
 function generateId() {
   return Date.now() + '-' + Math.random().toString(36).substr(2, 6);
 }
 
-// Отображение кнопок месяцев
 function renderMonths() {
   const bar = document.getElementById('monthsBar');
   if (!bar) return;
@@ -311,7 +314,6 @@ function renderMonths() {
   }
 }
 
-// Отображение задач для текущего месяца
 function renderTasks() {
   const container = document.getElementById('tasksContainer');
   const monthTitle = document.getElementById('monthTitle');
@@ -320,7 +322,8 @@ function renderTasks() {
   if (!container) return;
   
   const tasks = allTasks[currentMonth] || [];
-  monthTitle.innerHTML = `🌸 ${currentMonth} · мои планы`;
+  const icon = currentColors.monthIcon || '📅';
+  monthTitle.innerHTML = `${icon} ${currentMonth} · мои планы`;
   monthTitle.style.color = currentColors.titleColor;
   
   const activeCount = tasks.filter(t => !t.done).length;
@@ -428,7 +431,6 @@ function renderTasks() {
   }
 }
 
-// Добавление новой задачи
 function addTask() {
   const input = document.getElementById('taskInput');
   const text = input.value.trim();
@@ -451,7 +453,6 @@ function addTask() {
   input.focus();
 }
 
-// Настройка модального окна
 function setupModal() {
   const modal = document.getElementById('customizeModal');
   const customizeBtn = document.getElementById('customizeBtn');
@@ -465,7 +466,9 @@ function setupModal() {
       document.getElementById('bgColor2').value = currentColors.bgColor2;
       document.getElementById('containerBg').value = currentColors.containerBg;
       document.getElementById('titleColor').value = currentColors.titleColor;
+      document.getElementById('titleIcon').value = currentColors.titleIcon || '🌷';
       document.getElementById('subtitleColor').value = currentColors.subtitleColor;
+      document.getElementById('monthIcon').value = currentColors.monthIcon || '📅';
       document.getElementById('activeMonthBg').value = currentColors.activeMonthBg;
       document.getElementById('buttonColor').value = currentColors.buttonColor;
       document.getElementById('cardBg').value = currentColors.cardBg;
@@ -493,7 +496,9 @@ function setupModal() {
         bgColor2: document.getElementById('bgColor2').value,
         containerBg: document.getElementById('containerBg').value,
         titleColor: document.getElementById('titleColor').value,
+        titleIcon: document.getElementById('titleIcon').value || '🌷',
         subtitleColor: document.getElementById('subtitleColor').value,
+        monthIcon: document.getElementById('monthIcon').value || '📅',
         activeMonthBg: document.getElementById('activeMonthBg').value,
         buttonColor: document.getElementById('buttonColor').value,
         cardBg: document.getElementById('cardBg').value
@@ -510,7 +515,9 @@ function setupModal() {
       document.getElementById('bgColor2').value = defaultColors.bgColor2;
       document.getElementById('containerBg').value = defaultColors.containerBg;
       document.getElementById('titleColor').value = defaultColors.titleColor;
+      document.getElementById('titleIcon').value = defaultColors.titleIcon;
       document.getElementById('subtitleColor').value = defaultColors.subtitleColor;
+      document.getElementById('monthIcon').value = defaultColors.monthIcon;
       document.getElementById('activeMonthBg').value = defaultColors.activeMonthBg;
       document.getElementById('buttonColor').value = defaultColors.buttonColor;
       document.getElementById('cardBg').value = defaultColors.cardBg;
@@ -520,14 +527,13 @@ function setupModal() {
   }
 }
 
-// Запуск приложения
 function init() {
   loadColors();
   initData();
   renderMonths();
   renderTasks();
   setupModal();
-  displayDailyQuote(); // Добавляем отображение цитаты
+  displayDailyQuote();
   
   const addBtn = document.getElementById('addButton');
   if (addBtn) {
@@ -553,5 +559,4 @@ function init() {
   }
 }
 
-// Запускаем приложение после загрузки страницы
 window.addEventListener('DOMContentLoaded', init);
